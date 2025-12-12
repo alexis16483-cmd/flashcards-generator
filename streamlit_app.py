@@ -6,6 +6,15 @@ import pdfplumber
 import streamlit as st
 import yake
 
+import os
+import json
+from openai import OpenAI
+
+# Initialise le client OpenAI avec ta clé secrète (venant de Streamlit Secrets)
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
+
+
 CONCEPT_QUESTION_TEMPLATES = [
     "À partir de ce passage « {snippet} », explique pourquoi « {keyword} » est un pivot de l'argumentation.",
     "Comment, selon le document, « {keyword} » fonctionne-t-il concrètement dans cet extrait : « {snippet} » ?",
@@ -260,6 +269,40 @@ def _truncate_words(text: str, max_words: int = 75):
         return text.strip()
     return " ".join(words[:max_words]) + "…"
 
+# ============================================================
+# Génération avancée avec OpenAI (question + réponse)
+# ============================================================
+
+def generate_flashcards_with_openai(text: str, n_cards: int):
+    prompt = f"""
+    Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
+    Chaque flashcard doit contenir:
+    - Une question claire, précise et difficile
+    - Une réponse courte mais complète
+
+    Format attendu (JSON strict) :
+    [
+        {{"question": "...", "answer": "..."}},
+        ...
+    ]
+
+    Texte fourni :
+    {text}
+    """
+
+    response = client.responses.create(
+        model="gpt-4o-mini",
+        input=prompt,
+        max_output_tokens=2000
+    )
+
+    raw = response.output_text
+
+    try:
+        cards = json.loads(raw)
+        return cards
+    except:
+        return []
 
 # --------------------------------------------------
 # Style custom (CSS)
@@ -559,7 +602,7 @@ if st.button("Générer les flashcards maintenant"):
             except Exception:
                 pass
 
-        cards = build_flashcards_from_text(full_text, nombre_cartes)
+        cards = generate_flashcards_with_openai(full_text, nombre_cartes)
 
         if not cards:
             st.warning(
