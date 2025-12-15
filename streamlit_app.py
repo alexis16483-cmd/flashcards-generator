@@ -14,32 +14,6 @@ from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
-
-CONCEPT_QUESTION_TEMPLATES = [
-    "À partir de ce passage « {snippet} », explique pourquoi « {keyword} » est un pivot de l'argumentation.",
-    "Comment, selon le document, « {keyword} » fonctionne-t-il concrètement dans cet extrait : « {snippet} » ?",
-    "Quelles conséquences majeures du concept « {keyword} » sont mises en évidence ici : « {snippet} » ?",
-    "Quel problème « {keyword} » cherche-t-il à résoudre dans le passage suivant : « {snippet} » ?",
-    "Quels éléments ou étapes composent « {keyword} » dans ce segment : « {snippet} », et comment interagissent-ils ?",
-    "En quoi l'extrait « {snippet} » modifie ou nuance-t-il la compréhension habituelle de « {keyword} » ?",
-    "Quels exemples précis illustrent « {keyword} » dans ce passage : « {snippet} » ?",
-]
-
-PASSAGE_QUESTION_TEMPLATES = [
-    "Quelle idée principale retiens-tu du passage suivant : « {snippet} » ?",
-    "Quelles hypothèses implicites semblent guider l'auteur lorsqu'il affirme : « {snippet} » ?",
-    "Comment appliquerais-tu ce passage (« {snippet} ») à une situation réelle ou à un cas d'étude ?",
-    "Quel lien fais-tu entre « {snippet} » et une notion plus large vue dans le cours ?",
-    "Pourquoi l'auteur insiste-t-il sur ce raisonnement : « {snippet} » et quelles en sont les limites ?",
-]
-
-SENTENCE_QUESTION_TEMPLATES = [
-    "Quels arguments clés composent l'idée suivante et comment les relier : « {snippet} » ?",
-    "Quelles causes et conséquences ressortent de cette affirmation : « {snippet} » ?",
-    "Comment reformuler de manière critique cette déclaration : « {snippet} » ?",
-    "Quel contre-exemple ou quelle objection pourrait-on opposer à « {snippet} », et comment y répondre ?",
-]
-
 # --------------------------------------------------
 # Configuration de la page
 # --------------------------------------------------
@@ -152,6 +126,8 @@ Texte fourni :
             if q and a:
                 cards.append({"question": q, "answer": a})
 
+
+st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
         return cards
 
     except Exception as e:
@@ -340,24 +316,23 @@ def generate_flashcards_with_openai(text: str, n_cards: int):
     {text}
     """
 
-    response = client.responses.create(
+        response = client.responses.create(
         model="gpt-4o-mini",
         input=prompt,
-        max_output_tokens=2000
+        max_output_tokens=1200
     )
 
-  raw = response.output_text.strip()
+    raw = response.output_text.strip()
+    raw = raw.replace("```json", "").replace("```", "").strip()
 
-# Nettoyage si OpenAI renvoie ```json ... ```
-raw = raw.replace("```json", "").replace("```", "").strip()
+    try:
+        cards = json.loads(raw)
+        return cards
+    except Exception:
+        st.error("Erreur JSON OpenAI (voici la sortie brute):")
+        st.write(raw)
+        return []
 
-try:
-    cards = json.loads(raw)
-    return cards
-except Exception as e:
-    st.error("Erreur JSON OpenAI")
-    st.write(raw)
-    return []
   
 
 # --------------------------------------------------
