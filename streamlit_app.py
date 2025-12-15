@@ -109,6 +109,56 @@ def _summarize_context(text: str, keyword: str | None = None, max_sentences: int
     summary = " ".join(selected[:max_sentences])
     return _truncate_words(summary)
 
+# ================================================================
+# Génération avancée avec OpenAI (question + réponse)
+# ================================================================
+def generate_flashcards_with_openai(text: str, n_cards: int):
+    if not text.strip():
+        return []
+
+    prompt = f"""
+Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
+Chaque flashcard doit contenir:
+- Une question claire, précise et difficile
+- Une réponse courte mais complète
+
+Format attendu (JSON strict) :
+[
+    {{"question": "...", "answer": "..."}},
+    ...
+]
+
+Texte fourni :
+{text}
+"""
+
+    try:
+        # (petit debug visuel pour être sûr que la fonction est appelée)
+        st.write("🤖 OpenAI mode activé")
+
+        response = client.responses.create(
+            model="gpt-4o-mini",
+            input=prompt,
+            max_output_tokens=2000,
+        )
+
+        raw = response.output_text
+
+        cards_data = json.loads(raw)
+        cards = []
+        for item in cards_data:
+            q = item.get("question")
+            a = item.get("answer")
+            if q and a:
+                cards.append({"question": q, "answer": a})
+
+        return cards
+
+    except Exception as e:
+        st.error(f"Erreur OpenAI : {e}")
+        return []
+
+
 # --------------------------------------------------
 # Fonctions utilitaires
 # --------------------------------------------------
@@ -296,13 +346,19 @@ def generate_flashcards_with_openai(text: str, n_cards: int):
         max_output_tokens=2000
     )
 
-    raw = response.output_text
+  raw = response.output_text.strip()
 
-    try:
-        cards = json.loads(raw)
-        return cards
-    except:
-        return []
+# Nettoyage si OpenAI renvoie ```json ... ```
+raw = raw.replace("```json", "").replace("```", "").strip()
+
+try:
+    cards = json.loads(raw)
+    return cards
+except Exception as e:
+    st.error("Erreur JSON OpenAI")
+    st.write(raw)
+    return []
+  
 
 # --------------------------------------------------
 # Style custom (CSS)
