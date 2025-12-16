@@ -126,13 +126,16 @@ Texte fourni :
             if q and a:
                 cards.append({"question": q, "answer": a})
 
+try:
+    cards = json.loads(raw)
 
-st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
-        return cards
+    st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
+    return cards
 
-    except Exception as e:
-        st.error(f"Erreur OpenAI : {e}")
-        return []
+except Exception as e:
+    st.error(f"Erreur OpenAI : {e}")
+    st.write(raw)
+    return []
 
 
 # --------------------------------------------------
@@ -316,22 +319,23 @@ def generate_flashcards_with_openai(text: str, n_cards: int):
     {text}
     """
 
-        response = client.responses.create(
-        model="gpt-4o-mini",
-        input=prompt,
-        max_output_tokens=1200
-    )
+response = client.responses.create(
+    model="gpt-4o-mini",
+    input=prompt,
+    max_output_tokens=1200
+)
 
-    raw = response.output_text.strip()
-    raw = raw.replace("```json", "").replace("```", "").strip()
+raw = response.output_text.strip()
+raw = raw.replace("```json", "").replace("```", "").strip()
 
-    try:
-        cards = json.loads(raw)
-        return cards
-    except Exception:
-        st.error("Erreur JSON OpenAI (voici la sortie brute):")
-        st.write(raw)
-        return []
+try:
+    cards = json.loads(raw)
+    return cards
+except Exception:
+    st.error("Erreur JSON OpenAI (voici la sortie brute):")
+    st.write(raw)
+    return []
+        
 
   
 
