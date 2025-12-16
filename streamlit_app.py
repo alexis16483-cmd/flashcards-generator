@@ -177,7 +177,6 @@ Texte fourni :
         if "raw" in locals():
             st.write(raw)
         return []
-# ...existing code...
 def extract_text_from_pdf(uploaded_file) -> str:
     """Extrait le texte d'un PDF uploadé."""
     data = uploaded_file.read()
@@ -334,54 +333,6 @@ def _truncate_words(text: str, max_words: int = 75):
     if len(words) <= max_words:
         return text.strip()
     return " ".join(words[:max_words]) + "…"
-
-# ============================================================
-# Génération avancée avec OpenAI (question + réponse)
-# ============================================================
-
-def generate_flashcards_with_openai(text: str, n_cards: int):
-    """
-    Unified, robust OpenAI call that returns a list of {"question","answer"} dicts.
-    Handles different response shapes and shows raw output on JSON errors.
-    """
-    if not text or not text.strip():
-        return []
-
-    prompt = f"""
-Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
-Chaque flashcard doit contenir:
-- Une question claire, précise et difficile
-- Une réponse courte mais complète
-
-Format attendu (JSON strict) :
-[
-    {{"question": "...", "answer": "..."}},
-    ...
-]
-
-Texte fourni :
-{text}
-"""
-
-response = client.responses.create(
-    model="gpt-4o-mini",
-    input=prompt,
-    max_output_tokens=1200
-)
-
-raw = response.output_text.strip()
-raw = raw.replace("```json", "").replace("```", "").strip()
-
-try:
-    cards = json.loads(raw)
-    return cards
-except Exception:
-    st.error("Erreur JSON OpenAI (voici la sortie brute):")
-    st.write(raw)
-    return []
-        
-
-  
 
 # --------------------------------------------------
 # Style custom (CSS)
