@@ -87,7 +87,11 @@ def _summarize_context(text: str, keyword: str | None = None, max_sentences: int
 # Génération avancée avec OpenAI (question + réponse)
 # ================================================================
 def generate_flashcards_with_openai(text: str, n_cards: int):
-    if not text.strip():
+    """
+    Unified, robust OpenAI call that returns a list of {"question","answer"} dicts.
+    Handles different response shapes and shows raw output on JSON errors.
+    """
+    if not text or not text.strip():
         return []
 
     prompt = f"""
@@ -107,40 +111,73 @@ Texte fourni :
 """
 
     try:
-        # (petit debug visuel pour être sûr que la fonction est appelée)
         st.write("🤖 OpenAI mode activé")
-
         response = client.responses.create(
             model="gpt-4o-mini",
             input=prompt,
-            max_output_tokens=2000,
+            max_output_tokens=1200,
         )
 
-        raw = response.output_text
+        # Try common SDK output_text field first
+        raw = getattr(response, "output_text", "") or ""
 
+        # If SDK returned structured "output", try to extract textual pieces
+        if not raw and hasattr(response, "output"):
+            parts = []
+            try:
+                for item in response.output:
+                    if isinstance(item, dict):
+                        # Newer SDKs may nest content blocks
+                        content = item.get("content") or item.get("text") or item.get("message")
+                        if isinstance(content, list):
+                            for c in content:
+                                if isinstance(c, dict):
+                                    parts.append(c.get("text", ""))
+                                else:
+                                    parts.append(str(c))
+                        elif content is not None:
+                            parts.append(str(content))
+                        else:
+                            # fallback to stringifying item
+                            parts.append(json.dumps(item, ensure_ascii=False))
+                    else:
+                        parts.append(str(item))
+            except Exception:
+                parts = []
+            raw = " ".join([p for p in parts if p]).strip()
+
+        raw = (raw or "").replace("```json", "").replace("```", "").strip()
+
+        # Parse JSON
         cards_data = json.loads(raw)
         cards = []
-        for item in cards_data:
-            q = item.get("question")
-            a = item.get("answer")
-            if q and a:
-                cards.append({"question": q, "answer": a})
+        if isinstance(cards_data, list):
+            for item in cards_data:
+                if not isinstance(item, dict):
+                    continue
+                q = item.get("question") or item.get("q")
+                a = item.get("answer") or item.get("a")
+                if q and a:
+                    cards.append({"question": str(q).strip(), "answer": str(a).strip()})
+        else:
+            # If the model wrapped the array inside a field
+            st.write("Réponse OpenAI inattendue (attendu: liste JSON).")
+            st.write(cards_data)
 
-try:
-    cards = json.loads(raw)
+        if not cards:
+            st.error("Aucune carte valide trouvée dans la réponse OpenAI. Voir la sortie brute ci-dessous.")
+            st.write(raw)
+            return []
 
-    st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
-    return cards
+        st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
+        return cards[:n_cards]
 
-except Exception as e:
-    st.error(f"Erreur OpenAI : {e}")
-    st.write(raw)
-    return []
-
-
-# --------------------------------------------------
-# Fonctions utilitaires
-# --------------------------------------------------
+    except Exception as e:
+        st.error(f"Erreur OpenAI : {e}")
+        if "raw" in locals():
+            st.write(raw)
+        return []
+# ...existing code...
 def extract_text_from_pdf(uploaded_file) -> str:
     """Extrait le texte d'un PDF uploadé."""
     data = uploaded_file.read()
@@ -303,21 +340,28 @@ def _truncate_words(text: str, max_words: int = 75):
 # ============================================================
 
 def generate_flashcards_with_openai(text: str, n_cards: int):
-    prompt = f"""
-    Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
-    Chaque flashcard doit contenir:
-    - Une question claire, précise et difficile
-    - Une réponse courte mais complète
-
-    Format attendu (JSON strict) :
-    [
-        {{"question": "...", "answer": "..."}},
-        ...
-    ]
-
-    Texte fourni :
-    {text}
     """
+    Unified, robust OpenAI call that returns a list of {"question","answer"} dicts.
+    Handles different response shapes and shows raw output on JSON errors.
+    """
+    if not text or not text.strip():
+        return []
+
+    prompt = f"""
+Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
+Chaque flashcard doit contenir:
+- Une question claire, précise et difficile
+- Une réponse courte mais complète
+
+Format attendu (JSON strict) :
+[
+    {{"question": "...", "answer": "..."}},
+    ...
+]
+
+Texte fourni :
+{text}
+"""
 
 response = client.responses.create(
     model="gpt-4o-mini",
