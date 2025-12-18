@@ -490,6 +490,72 @@ st.markdown(
 )
 
 # --------------------------------------------------
+# Navigation
+# --------------------------------------------------
+page = st.sidebar.radio("Navigation", ["Flashcards", "FAQ"], index=0)
+
+if page == "FAQ":
+    st.title("FAQ")
+    st.markdown(
+        """
+        <div style="background: linear-gradient(120deg, #0f172a, #334155);
+                    color: #f8fafc; padding: 24px 28px; border-radius: 18px;">
+            <h3 style="margin: 0 0 6px 0;">Answers to common questions</h3>
+            <p style="margin: 0; opacity: 0.9;">
+                Quick guidance on uploads, decks, and how flashcards are generated.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    st.markdown("")
+
+    with st.expander("Which files can I upload?"):
+        st.write(
+            "Text-based PDFs work best (lecture notes, slides exported as PDF). "
+            "Scanned images inside PDFs are not yet supported."
+        )
+
+    with st.expander("Why did I get empty or low-quality cards?"):
+        st.write(
+            "This usually happens when the PDF has little extractable text or the text "
+            "is very short. Try a richer PDF or combine multiple PDFs in one upload."
+        )
+
+    with st.expander("How many cards should I generate?"):
+        st.write(
+            "Start with 10. If the topic is dense, increase to 15 or 20. If the "
+            "topic is short, 5 may be more accurate."
+        )
+
+    with st.expander("Is OpenAI required?"):
+        st.write(
+            "Yes. Card generation uses the OpenAI API. Make sure your "
+            "OPENAI_API_KEY is set in your environment or Streamlit secrets."
+        )
+
+    with st.expander("Are my decks saved?"):
+        st.write(
+            "Decks live in memory for your current session. If you refresh the app, "
+            "they reset. Persisted storage can be added if you need it."
+        )
+
+    with st.expander("Can I edit cards after they are created?"):
+        st.write(
+            "Not yet in the UI. A simple editor can be added so you can tweak "
+            "questions or answers."
+        )
+
+    with st.expander("Any tips for better results?"):
+        st.write(
+            "Upload clean, text-based PDFs, avoid scanned images, and keep topics focused. "
+            "Combining multiple short PDFs often produces better coverage."
+        )
+
+    st.stop()
+
+# --------------------------------------------------
 # UI principale
 # --------------------------------------------------
 st.title("Flashcards generator")
