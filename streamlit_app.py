@@ -340,9 +340,19 @@ def _truncate_words(text: str, max_words: int = 75):
 st.markdown(
     """
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap');
+
     html, body, [class*="css"] {
-        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-                     system-ui, sans-serif;
+        font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
+        letter-spacing: 0.1px;
+        color: #0f172a;
+    }
+
+    h1, h2, h3, h4, h5, h6,
+    .upload-header-title,
+    .upload-main-text {
+        font-family: "Playfair Display", Georgia, serif;
+        letter-spacing: 0.2px;
     }
 
     .upload-header {
@@ -350,6 +360,7 @@ st.markdown(
         border-radius: 18px 18px 0 0;
         padding: 22px 28px;
         color: white;
+        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.18);
     }
 
     .upload-header-title {
@@ -370,6 +381,7 @@ st.markdown(
         border-radius: 0 0 18px 18px;
         padding: 26px 24px 28px 24px;
         margin-bottom: 20px;
+        box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
     }
 
     .upload-icon-circle {
