@@ -340,44 +340,9 @@ def _truncate_words(text: str, max_words: int = 75):
 st.markdown(
     """
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;500;600&display=swap');
-
     html, body, [class*="css"] {
-        font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif;
-        letter-spacing: 0.1px;
-        color: #0f172a;
-    }
-
-    h1, h2, h3, h4, h5, h6,
-    .upload-header-title,
-    .upload-main-text {
-        font-family: "Playfair Display", Georgia, serif;
-        letter-spacing: 0.2px;
-    }
-
-    .stApp {
-        background:
-            radial-gradient(1200px 500px at 10% 0%, rgba(148, 163, 184, 0.16), transparent 60%),
-            radial-gradient(900px 500px at 95% 10%, rgba(99, 102, 241, 0.12), transparent 55%),
-            linear-gradient(180deg, #f8fafc 0%, #eef2ff 35%, #ffffff 100%);
-        min-height: 100vh;
-    }
-
-    .stApp::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        background-image:
-            linear-gradient(120deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-            linear-gradient(0deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-        background-size: 80px 80px, 80px 80px;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    section[data-testid="stSidebar"] {
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(6px);
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+                     system-ui, sans-serif;
     }
 
     .upload-header {
@@ -385,7 +350,6 @@ st.markdown(
         border-radius: 18px 18px 0 0;
         padding: 22px 28px;
         color: white;
-        box-shadow: 0 16px 32px rgba(15, 23, 42, 0.18);
     }
 
     .upload-header-title {
@@ -406,7 +370,6 @@ st.markdown(
         border-radius: 0 0 18px 18px;
         padding: 26px 24px 28px 24px;
         margin-bottom: 20px;
-        box-shadow: 0 10px 18px rgba(15, 23, 42, 0.08);
     }
 
     .upload-icon-circle {
