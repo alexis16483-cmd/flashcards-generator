@@ -547,8 +547,11 @@ st.markdown(
 page = st.sidebar.radio("Menu", ["Cartes", "Questions fréquentes"], index=0)
 
 if page == "Questions fréquentes":
-    st.image("assets/logo.png", width=260)
-    st.title("Questions fréquentes")
+    logo_col, title_col = st.columns([1, 5])
+    with logo_col:
+        st.image("assets/logo.png", width=120)
+    with title_col:
+        st.title("Questions fréquentes")
     st.markdown(
         """
         <div style="background: linear-gradient(120deg, #0f172a, #334155);
@@ -605,8 +608,11 @@ if page == "Questions fréquentes":
 # --------------------------------------------------
 # UI principale
 # --------------------------------------------------
-st.image("assets/logo.png", width=260)
-st.title("Générateur de cartes mémoire")
+logo_col, title_col = st.columns([1, 5])
+with logo_col:
+    st.image("assets/logo.png", width=120)
+with title_col:
+    st.title("Générateur de cartes mémoire")
 
 st.subheader("1. Nom du jeu")
 
