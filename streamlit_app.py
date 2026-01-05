@@ -581,12 +581,6 @@ if page == "Questions fréquentes":
             "sujet est court, 5 peut être plus adapté."
         )
 
-    with st.expander("OpenAI est-il obligatoire ?"):
-        st.write(
-            "Oui. La génération de cartes utilise l’API OpenAI. Assure-toi que "
-            "OPENAI_API_KEY est défini dans ton environnement ou les secrets Streamlit."
-        )
-
     with st.expander("Mes jeux sont-ils sauvegardés ?"):
         st.write(
             "Les jeux vivent en mémoire pour la session en cours. Si tu rafraîchis l’app, "
