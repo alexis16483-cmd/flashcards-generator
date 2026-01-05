@@ -43,12 +43,6 @@ if "flashcards" not in st.session_state:
     st.session_state.flashcards = []
 
 
-def _render_logo(width: int = 120):
-    logo_path = "logo.png"
-    if os.path.isfile(logo_path) and os.path.getsize(logo_path) > 0:
-        st.image(logo_path, width=width)
-
-
 def _flip_card():
     st.session_state.show_answer = not st.session_state.show_answer
 
@@ -553,11 +547,7 @@ st.markdown(
 page = st.sidebar.radio("Menu", ["Cartes", "Questions fréquentes"], index=0)
 
 if page == "Questions fréquentes":
-    logo_col, title_col = st.columns([1, 5])
-    with logo_col:
-        _render_logo(width=120)
-    with title_col:
-        st.title("Questions fréquentes")
+    st.title("Questions fréquentes")
     st.markdown(
         """
         <div style="background: linear-gradient(120deg, #0f172a, #334155);
@@ -614,11 +604,7 @@ if page == "Questions fréquentes":
 # --------------------------------------------------
 # UI principale
 # --------------------------------------------------
-logo_col, title_col = st.columns([1, 5])
-with logo_col:
-    _render_logo(width=120)
-with title_col:
-    st.title("Générateur de cartes mémoire")
+st.title("Générateur de cartes mémoire")
 
 st.subheader("1. Nom du jeu")
 
