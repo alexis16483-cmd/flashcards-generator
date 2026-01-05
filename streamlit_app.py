@@ -410,6 +410,58 @@ st.markdown(
         margin-top: 10px;
     }
 
+    /* Traduction visuelle du dropzone Streamlit */
+    div[data-testid="stFileUploaderDropzone"] {
+        position: relative;
+        padding-top: 56px;
+    }
+
+    div[data-testid="stFileUploaderDropzone"] > div,
+    div[data-testid="stFileUploaderDropzone"] span,
+    div[data-testid="stFileUploaderDropzone"] small,
+    div[data-testid="stFileUploaderDropzone"] p {
+        color: transparent !important;
+    }
+
+    div[data-testid="stFileUploaderDropzone"]::before {
+        content: "Glissez-déposez vos fichiers ici";
+        position: absolute;
+        top: 12px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #4b5563;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    div[data-testid="stFileUploaderDropzone"]::after {
+        content: "ou cliquez pour parcourir";
+        position: absolute;
+        top: 34px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        color: #6b7280;
+        font-size: 12px;
+    }
+
+    div[data-testid="stFileUploaderDropzone"] button {
+        color: transparent !important;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    div[data-testid="stFileUploaderDropzone"] button::after {
+        content: "Parcourir les fichiers";
+        color: #111827;
+        position: absolute;
+        left: 0;
+        right: 0;
+    }
+
     /* --------- Flashcard flip --------- */
     .flashcard-wrapper {
         display: flex;
@@ -492,10 +544,10 @@ st.markdown(
 # --------------------------------------------------
 # Navigation
 # --------------------------------------------------
-page = st.sidebar.radio("Navigation", ["Cartes", "FAQ"], index=0)
+page = st.sidebar.radio("Menu", ["Cartes", "Questions fréquentes"], index=0)
 
-if page == "FAQ":
-    st.title("FAQ")
+if page == "Questions fréquentes":
+    st.title("Questions fréquentes")
     st.markdown(
         """
         <div style="background: linear-gradient(120deg, #0f172a, #334155);
