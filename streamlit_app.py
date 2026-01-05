@@ -547,6 +547,7 @@ st.markdown(
 page = st.sidebar.radio("Menu", ["Cartes", "Questions fréquentes"], index=0)
 
 if page == "Questions fréquentes":
+    st.image("assets/logo.png", width=260)
     st.title("Questions fréquentes")
     st.markdown(
         """
@@ -604,6 +605,7 @@ if page == "Questions fréquentes":
 # --------------------------------------------------
 # UI principale
 # --------------------------------------------------
+st.image("assets/logo.png", width=260)
 st.title("Générateur de cartes mémoire")
 
 st.subheader("1. Nom du jeu")
