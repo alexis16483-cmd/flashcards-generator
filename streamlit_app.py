@@ -18,7 +18,7 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # Configuration de la page
 # --------------------------------------------------
 st.set_page_config(
-    page_title="Flashcards generator",
+    page_title="Générateur de cartes mémoire",
     page_icon="🃏",
     layout="centered",
 )
@@ -95,8 +95,8 @@ def generate_flashcards_with_openai(text: str, n_cards: int):
         return []
 
     prompt = f"""
-Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} flashcards.
-Chaque flashcard doit contenir:
+Tu es un expert pédagogique. À partir du texte suivant, génère {n_cards} cartes mémoire.
+Chaque carte mémoire doit contenir:
 - Une question claire, précise et difficile
 - Une réponse courte mais complète
 
@@ -169,7 +169,7 @@ Texte fourni :
             st.write(raw)
             return []
 
-        st.success("🔥 FLASHCARDS GÉNÉRÉES PAR OPENAI 🔥")
+        st.success("🔥 CARTES GÉNÉRÉES PAR OPENAI 🔥")
         return cards[:n_cards]
 
     except Exception as e:
@@ -492,7 +492,7 @@ st.markdown(
 # --------------------------------------------------
 # Navigation
 # --------------------------------------------------
-page = st.sidebar.radio("Navigation", ["Flashcards", "FAQ"], index=0)
+page = st.sidebar.radio("Navigation", ["Cartes", "FAQ"], index=0)
 
 if page == "FAQ":
     st.title("FAQ")
@@ -500,9 +500,9 @@ if page == "FAQ":
         """
         <div style="background: linear-gradient(120deg, #0f172a, #334155);
                     color: #f8fafc; padding: 24px 28px; border-radius: 18px;">
-            <h3 style="margin: 0 0 6px 0;">Answers to common questions</h3>
+            <h3 style="margin: 0 0 6px 0;">Réponses aux questions fréquentes</h3>
             <p style="margin: 0; opacity: 0.9;">
-                Quick guidance on uploads, decks, and how flashcards are generated.
+                Conseils rapides sur les imports, les jeux et la génération des cartes.
             </p>
         </div>
         """,
@@ -511,46 +511,46 @@ if page == "FAQ":
 
     st.markdown("")
 
-    with st.expander("Which files can I upload?"):
+    with st.expander("Quels fichiers puis-je importer ?"):
         st.write(
-            "Text-based PDFs work best (lecture notes, slides exported as PDF). "
-            "Scanned images inside PDFs are not yet supported."
+            "Les PDF contenant du texte fonctionnent le mieux (notes de cours, diapos exportées en PDF). "
+            "Les images scannées dans les PDF ne sont pas encore prises en charge."
         )
 
-    with st.expander("Why did I get empty or low-quality cards?"):
+    with st.expander("Pourquoi ai-je obtenu des cartes vides ou de faible qualité ?"):
         st.write(
-            "This usually happens when the PDF has little extractable text or the text "
-            "is very short. Try a richer PDF or combine multiple PDFs in one upload."
+            "Cela arrive souvent quand le PDF contient peu de texte extractible ou si le texte est "
+            "trop court. Essaie un PDF plus riche ou combine plusieurs PDF en un seul import."
         )
 
-    with st.expander("How many cards should I generate?"):
+    with st.expander("Combien de cartes dois-je générer ?"):
         st.write(
-            "Start with 10. If the topic is dense, increase to 15 or 20. If the "
-            "topic is short, 5 may be more accurate."
+            "Commence par 10. Si le sujet est dense, passe à 15 ou 20. Si le "
+            "sujet est court, 5 peut être plus adapté."
         )
 
-    with st.expander("Is OpenAI required?"):
+    with st.expander("OpenAI est-il obligatoire ?"):
         st.write(
-            "Yes. Card generation uses the OpenAI API. Make sure your "
-            "OPENAI_API_KEY is set in your environment or Streamlit secrets."
+            "Oui. La génération de cartes utilise l’API OpenAI. Assure-toi que "
+            "OPENAI_API_KEY est défini dans ton environnement ou les secrets Streamlit."
         )
 
-    with st.expander("Are my decks saved?"):
+    with st.expander("Mes jeux sont-ils sauvegardés ?"):
         st.write(
-            "Decks live in memory for your current session. If you refresh the app, "
-            "they reset. Persisted storage can be added if you need it."
+            "Les jeux vivent en mémoire pour la session en cours. Si tu rafraîchis l’app, "
+            "ils sont réinitialisés. Un stockage persistant peut être ajouté si besoin."
         )
 
-    with st.expander("Can I edit cards after they are created?"):
+    with st.expander("Puis-je modifier les cartes après leur création ?"):
         st.write(
-            "Not yet in the UI. A simple editor can be added so you can tweak "
-            "questions or answers."
+            "Pas encore dans l’interface. Un éditeur simple peut être ajouté pour ajuster "
+            "les questions ou les réponses."
         )
 
-    with st.expander("Any tips for better results?"):
+    with st.expander("Des astuces pour de meilleurs résultats ?"):
         st.write(
-            "Upload clean, text-based PDFs, avoid scanned images, and keep topics focused. "
-            "Combining multiple short PDFs often produces better coverage."
+            "Importe des PDF propres contenant du texte, évite les images scannées et garde un sujet ciblé. "
+            "Combiner plusieurs courts PDF donne souvent une meilleure couverture."
         )
 
     st.stop()
@@ -558,18 +558,18 @@ if page == "FAQ":
 # --------------------------------------------------
 # UI principale
 # --------------------------------------------------
-st.title("Flashcards generator")
+st.title("Générateur de cartes mémoire")
 
-st.subheader("1. Nom du deck")
+st.subheader("1. Nom du jeu")
 
 deck_name = st.text_input(
-    "Nom du deck (ex.: Biologie, Histoire, Math...)",
+    "Nom du jeu (ex. : Biologie, Histoire, Math...)",
     value=st.session_state.current_deck or "",
 )
 
-if st.button("Valider le deck"):
+if st.button("Valider le jeu"):
     if not deck_name.strip():
-        st.warning("Tu dois entrer un nom de deck.")
+        st.warning("Tu dois entrer un nom de jeu.")
     else:
         st.session_state.current_deck = deck_name
         # si le deck n’existe pas, on le crée
@@ -579,10 +579,10 @@ if st.button("Valider le deck"):
         st.session_state.flashcards = st.session_state.decks[deck_name]
         st.session_state.card_index = 0
         st.session_state.show_answer = False
-        st.success(f"Deck « {deck_name} » sélectionné.")
+        st.success(f"Jeu « {deck_name} » sélectionné.")
 
 
-existing_decks = ["(Nouveau deck)"] + list(st.session_state.decks.keys())
+existing_decks = ["(Nouveau jeu)"] + list(st.session_state.decks.keys())
 default_option = 0
 if (
     st.session_state.current_deck
@@ -591,22 +591,22 @@ if (
     default_option = existing_decks.index(st.session_state.current_deck)
 
 selected = st.selectbox(
-    "Choisis un deck existant ou crée un nouveau deck",
+    "Choisis un jeu existant ou crée un nouveau jeu",
     options=existing_decks,
     index=default_option,
 )
 
 new_deck_name = ""
-if selected == "(Nouveau deck)":
+if selected == "(Nouveau jeu)":
     new_deck_name = st.text_input(
-        "Nom du nouveau deck (ex.: Biologie, Histoire, Math)",
+        "Nom du nouveau jeu (ex. : Biologie, Histoire, Math)",
         value="",
         placeholder="Biologie",
     )
-    if st.button("Créer ce deck"):
+    if st.button("Créer ce jeu"):
         name = new_deck_name.strip()
         if not name:
-            st.warning("Donne un nom à ton deck (ex.: Biologie, Histoire...).")
+            st.warning("Donne un nom à ton jeu (ex. : Biologie, Histoire...).")
         else:
             if name not in st.session_state.decks:
                 st.session_state.decks[name] = []
@@ -614,7 +614,7 @@ if selected == "(Nouveau deck)":
             st.session_state.flashcards = st.session_state.decks[name]
             st.session_state.card_index = 0
             st.session_state.show_answer = False
-            st.success(f"Deck « {name} » prêt. Tu peux maintenant générer des cartes pour ce deck.")
+            st.success(f"Jeu « {name} » prêt. Tu peux maintenant générer des cartes pour ce jeu.")
 else:
     if selected != st.session_state.current_deck:
         st.session_state.current_deck = selected
@@ -625,9 +625,9 @@ else:
 current_deck = st.session_state.current_deck
 
 if current_deck:
-    st.caption(f"Deck actuel : **{current_deck}**")
+    st.caption(f"Jeu actuel : **{current_deck}**")
 else:
-    st.info("Choisis ou crée un deck avant de générer des flashcards.")
+    st.info("Choisis ou crée un jeu avant de générer des cartes.")
 
 # ---- Choix du nombre de cartes ----
 st.subheader("2. Paramètres de génération")
@@ -678,16 +678,16 @@ if uploaded_files:
     )
 else:
     st.caption(
-        "Téléverse un PDF, choisis un deck (Biologie, Histoire, etc.) "
-        "puis clique sur « Générer les flashcards »."
+        "Téléverse un PDF, choisis un jeu (Biologie, Histoire, etc.) "
+        "puis clique sur « Générer les cartes »."
     )
 
 # ---- Bouton pour générer les flashcards à partir des notes ----
-st.subheader("4. Générer les flashcards pour ce deck")
+st.subheader("4. Générer les cartes pour ce jeu")
 
-if st.button("Générer les flashcards maintenant"):
+if st.button("Générer les cartes maintenant"):
     if not current_deck:
-        st.warning("Choisis ou crée un deck avant de générer des flashcards.")
+        st.warning("Choisis ou crée un jeu avant de générer des cartes.")
     elif not uploaded_files:
         st.warning("Téléverse au moins un PDF avec tes notes.")
     else:
@@ -702,7 +702,7 @@ if st.button("Générer les flashcards maintenant"):
 
         if not cards:
             st.warning(
-                "Je n’ai pas réussi à extraire assez de texte pour créer des flashcards. "
+                "Je n’ai pas réussi à extraire assez de texte pour créer des cartes. "
                 "Vérifie que ton PDF contient du texte (et pas seulement une image scannée)."
             )
         else:
@@ -712,20 +712,20 @@ if st.button("Générer les flashcards maintenant"):
             st.session_state.card_index = 0
             st.session_state.show_answer = False
             st.success(
-                f"{len(cards)} flashcards générées pour le deck « {current_deck} » ✅"
+                f"{len(cards)} cartes générées pour le jeu « {current_deck} » ✅"
             )
 
 # --------------------------------------------------
 # Affichage des flashcards du deck courant
 # --------------------------------------------------
-st.subheader("5. Révision des flashcards")
+st.subheader("5. Révision des cartes")
 
 flashcards = st.session_state.flashcards
 
 if not current_deck:
-    st.info("Aucun deck sélectionné pour l’instant.")
+    st.info("Aucun jeu sélectionné pour l’instant.")
 elif not flashcards:
-    st.info(f"Aucune flashcard dans le deck « {current_deck} » pour le moment.")
+    st.info(f"Aucune carte dans le jeu « {current_deck} » pour le moment.")
 else:
     n_cards = len(flashcards)
     idx = st.session_state.card_index % n_cards
@@ -776,6 +776,6 @@ else:
     )
 
     st.markdown(
-        f'<div class="index-label">{idx + 1} / {n_cards} — Deck : {current_deck}</div>',
+        f'<div class="index-label">{idx + 1} / {n_cards} — Jeu : {current_deck}</div>',
         unsafe_allow_html=True,
     )
